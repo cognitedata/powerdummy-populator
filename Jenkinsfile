@@ -38,6 +38,7 @@ podTemplate(
     ]) {
     node(label) {
         def isMaster = env.BRANCH_NAME == 'master'
+        def ingestionDockerImageName = "eu.gcr.io/cognitedata/powerdummy-populator"
         container('jnlp') {
             stage('Checkout') {
                 checkout(scm)
@@ -64,7 +65,7 @@ podTemplate(
             }
             if (isMaster) {
                 stage("Push Docker image") {
-                    sh("docker push $ingestionDockerImageName:$imageTag")
+                    sh("docker push $ingestionDockerImageName:latest")
                 }
             }
         }
