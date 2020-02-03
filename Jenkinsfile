@@ -28,7 +28,6 @@ podTemplate(
         )
     ],
     volumes: [
-        configMapVolume(configMapName: 'codecov-script-configmap', mountPath: '/codecov-script'),
         hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock'),
         secretVolume(secretName: 'jenkins-docker-builder', mountPath: '/jenkins-docker-builder'),
     ],
@@ -56,7 +55,7 @@ podTemplate(
                 sh("poetry run black --check .")
             }
             stage('Test') {
-                sh("poetry run pytest --reruns=1 --maxfail=1")
+                sh("poetry run pytest")
             }
         }
         container('docker') {
