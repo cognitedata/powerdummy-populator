@@ -18,7 +18,7 @@ line_length=120                # corresponds to -w  flag
 multi_line_output=3            # corresponds to -m  flag
 include_trailing_comma=true    # corresponds to -tc flag
 skip_glob = '^((?!py$).)*$'    # this makes sort all Python files
-known_third_party = ["cognite"]
+known_third_party = ["cognite", "numpy"]
 
 [tool.tox]
 legacy_tox_ini = """
@@ -36,8 +36,10 @@ commands =
 """
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = "^3.6.1"
 cognite-sdk = "^1.4"
+numpy = "^1.18"
+pandas = "^1.0"
 
 [tool.poetry.dev-dependencies]
 black = "^19.3b0"
