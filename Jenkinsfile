@@ -66,8 +66,8 @@ podTemplate(
             }
             if (isMaster) {
                 stage("Push Docker image") {
-                    #todo: credentials
-                    #sh("docker push $dockerImageName:latest")
+                    // todo: credentials
+                    // sh("docker push $dockerImageName:latest")
                 }
             }
         }
