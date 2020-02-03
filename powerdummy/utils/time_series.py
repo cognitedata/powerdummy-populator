@@ -6,7 +6,6 @@ from cognite.client.utils._time import timestamp_to_ms
 
 def generate_time_series(type="const", parameters={}, start=datetime(2018, 1, 1), end="now", frequency=0.1):
     timestamps = np.arange(timestamp_to_ms(start), timestamp_to_ms(end), 1000 / frequency).astype(int)
-
     if type == "sine":
         return generate_sine(timestamps, parameters)
     elif type == "const":
