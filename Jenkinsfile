@@ -38,7 +38,7 @@ podTemplate(
     ]) {
     node(label) {
         def isMaster = env.BRANCH_NAME == 'master'
-        def ingestionDockerImageName = "eu.gcr.io/cognitedata/powerdummy-populator"
+        def dockerImageName = "eu.gcr.io/cognitedata/powerdummy-populator"
         container('jnlp') {
             stage('Checkout') {
                 checkout(scm)
@@ -61,11 +61,11 @@ podTemplate(
         }
         container('docker') {
             stage("Build Docker image") {
-                sh("docker build -t powerdummy-populator:latest --build-arg api_key=$POWERDUMMY_API_KEY .")
+                sh("docker build -t $dockerImageName:latest --build-arg api_key=$POWERDUMMY_API_KEY .")
             }
             if (isMaster) {
                 stage("Push Docker image") {
-                    sh("docker push $ingestionDockerImageName:latest")
+                    sh("docker push $dockerImageName:latest")
                 }
             }
         }
