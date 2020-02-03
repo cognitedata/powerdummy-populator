@@ -35,7 +35,7 @@ podTemplate(
     envVars: [
         secretEnvVar(key: 'POWERDUMMY_API_KEY', secretName: 'powerdummy-apikey', secretKey: 'api-key'),
         envVar(key: 'COGNITE_BASE_URL', value: "https://greenfield.cognitedata.com"),
-        envVar(key: 'COGNITE_CLIENT_NAME', value: "powerdummy-populator")
+        envVar(key: 'COGNITE_CLIENT_NAME', value: "powerdummy-populator"),
         envVar(key: 'GOOGLE_APPLICATION_CREDENTIALS', value: '/secrets/anubis/credentials.json'),
     ]) {
     node(label) {
