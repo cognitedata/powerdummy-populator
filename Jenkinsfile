@@ -30,11 +30,13 @@ podTemplate(
     volumes: [
         hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock'),
         secretVolume(secretName: 'jenkins-docker-builder', mountPath: '/jenkins-docker-builder'),
+        secretVolume(secretName: 'anubis-pubsub-sa', mountPath: '/secrets/anubis/'),
     ],
     envVars: [
         secretEnvVar(key: 'POWERDUMMY_API_KEY', secretName: 'powerdummy-apikey', secretKey: 'api-key'),
         envVar(key: 'COGNITE_BASE_URL', value: "https://greenfield.cognitedata.com"),
         envVar(key: 'COGNITE_CLIENT_NAME', value: "powerdummy-populator")
+        envVar(key: 'GOOGLE_APPLICATION_CREDENTIALS', value: '/secrets/anubis/credentials.json'),
     ]) {
     node(label) {
         def isMaster = env.BRANCH_NAME == 'master'
