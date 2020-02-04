@@ -34,8 +34,7 @@ podTemplate(
     envVars: [
         secretEnvVar(key: 'POWERDUMMY_API_KEY', secretName: 'powerdummy-apikey', secretKey: 'api-key'),
         envVar(key: 'COGNITE_BASE_URL', value: "https://greenfield.cognitedata.com"),
-        envVar(key: 'COGNITE_CLIENT_NAME', value: "powerdummy-populator"),
-        envVar(key: 'GOOGLE_APPLICATION_CREDENTIALS', value: '/secrets/powerdummy/credentials.json'),
+        envVar(key: 'COGNITE_CLIENT_NAME', value: "powerdummy-populator")
     ]) {
     node(label) {
         def isMaster = env.BRANCH_NAME == 'master'
@@ -43,6 +42,7 @@ podTemplate(
         container('jnlp') {
             stage('Checkout') {
                 checkout(scm)
+                dockerImageTag = sh(returnStdout: true, script: 'echo \$(date +%Y-%m-%d)-\$(git rev-parse --short HEAD)').trim()
             }
         }
         container('python') {
@@ -62,12 +62,12 @@ podTemplate(
         }
         container('docker') {
             stage("Build Docker image") {
-                sh("docker build -t $dockerImageName:latest --build-arg api_key=$POWERDUMMY_API_KEY .")
+                sh("docker build -t $dockerImageName:$dockerImageTag --build-arg api_key=$POWERDUMMY_API_KEY .")
             }
             if (isMaster) {
                 stage("Push Docker image") {
-                    // todo: credentials
-                    // sh("docker push $dockerImageName:latest")
+                    sh('#!/bin/sh -e\n' + 'docker login -u _json_key -p "$(cat /jenkins-docker-builder/credentials.json)" https://eu.gcr.io')
+                    sh("docker push $dockerImageName:$dockerImageTag")
                 }
             }
         }
