@@ -1,0 +1,43 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: powerdummy-populator
+  namespace: relationships
+  labels:
+    app: powerdummy
+    team: relationships
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app: powerdummy-populator
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+      labels:
+        app: powerdummy-populator
+        team: relationships
+    spec:
+      terminationGracePeriodSeconds: 180
+      containers:
+        - name: powerdummy-populator
+          image: eu.gcr.io/cognitedata/powerdummy-populator
+          resources:
+            requests:
+              memory: 300Mi
+              cpu: 200m
+          env:
+            - name: COGNITE_BASE_URL
+              value: "https://greenfield.cognitedata.com"
+            - name: COGNITE_CLIENT_NAME
+              value: "powerdummy-populator"
+            - name: POWERDUMMY_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: powerdummy-apikey
+                  key: api-key
