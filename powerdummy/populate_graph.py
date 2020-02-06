@@ -11,19 +11,31 @@ def populate_assets(client):
     al = client.assets.create(substations + transformers + lines)
     print(f"created {len(al)} core assets")
 
-    term_assets, term_rels = create_terminals(lines)
-
+    term_assets, term_rels = create_terminals(substations)
     tl = client.assets.create(term_assets)
     print(f"created {len(tl)} terminal/analog/sensor assets")
     tr = client.relationships.create(term_rels)
     print(f"created {len(tr)} relationships for terminals")
+
+    subst_terminals = [a for a in term_assets if a.metadata["type"] == "Terminal"]
+    line_rels = []
+    for l in lines:
+        from_ss = dethash(l.external_id) % len(subst_terminals)
+        to_ss = dethash(l.external_id + "x") % len(subst_terminals)
+        if to_ss == from_ss:
+            to_ss = (to_ss + 1) % len(subst_terminals)
+        rf = generate_relationship(subst_terminals[from_ss].external_id, l.external_id, type="flowsTo")
+        rt = generate_relationship(subst_terminals[to_ss].external_id, l.external_id, type="flowsTo")
+        line_rels += [rf, rt]
+    tr = client.relationships.create(line_rels)
+    print(f"created {len(tr)} relationships for lines")
 
 
 def create_terminals(assets):
     term_assets = []
     rels = []
     has_voltage_types = {
-        "AcLineSegment",
+        "ACLineSegment",
         "Sync Machine",
         "Conform",
         "StaticVar",
