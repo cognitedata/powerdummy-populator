@@ -31,3 +31,13 @@ def create_time_series(client, external_id, data):
         client.datapoints.insert(chunk, id=ts.id)
         print(f"posted {len(chunk)} datapoints to {external_id}")
     return ts
+
+
+def wipe_tenant(client):
+    for api in [client.time_series, client.relationships, client.events, client.assets]:
+        ids = [x.external_id for x in api() if x.external_id]
+        if api == client.assets:
+            api.delete(external_id=ids, recursive=True)
+        else:
+            api.delete(external_id=ids)
+        print(f"deleted {len(ids)} resources in {api}")
