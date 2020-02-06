@@ -1,11 +1,16 @@
 import copy
+import hashlib
 import uuid
 
 from cognite.client.data_classes import *
 
 
+def dethash(str):
+    return int(hashlib.md5(str.encode("utf-8")).hexdigest()[:16], 16)
+
+
 def generate_power_asset(name, type, metadata={}):
-    h = hash(name)
+    h = dethash(name)
     lx = h % 1000 / 100
     ly = h * h % 1000000 / 100000
     eid = str(uuid.UUID(int=h * h))
@@ -66,3 +71,14 @@ def generate_hydro_plant(name):
         "HydroGeneratingUnit.turbineType": "HydroTurbineKind.pelton",
     }
     return generate_power_asset(name, "HydroGeneratingUnit", metadata)
+
+
+def generate_relationship(from_asset, to_asset, type="belongsTo"):
+    return Relationship(
+        external_id=f"{type}:{from_asset}->{to_asset}",
+        source={"resourceId": from_asset, "resource": "Asset"},
+        target={"resourceId": to_asset, "resource": "Asset"},
+        relationship_type=type,
+        confidence=1.0,
+        data_set="powerdummy",
+    )
