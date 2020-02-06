@@ -18,4 +18,4 @@ RUN pip3 install --upgrade pip && \
     poetry install --no-dev --no-root
 
 ENV PYTHONPATH=/app
-ENTRYPOINT ["./populate.sh"]
+ENTRYPOINT ["./populate.py"]
