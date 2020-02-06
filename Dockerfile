@@ -10,7 +10,7 @@ ENV POWERDUMMY_API_KEY=$api_key
 
 WORKDIR /app
 COPY powerdummy /app/powerdummy
-COPY poetry.lock populate.sh pyproject.toml /app/
+COPY poetry.lock populate.py pyproject.toml /app/
 
 RUN pip3 install --upgrade pip && \
     pip3 install --no-cache poetry && \
