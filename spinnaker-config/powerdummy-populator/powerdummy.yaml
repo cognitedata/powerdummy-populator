@@ -9,10 +9,7 @@ pipeline:
     githubRepository: powerdummy-populator
     kubernetesAccount: cognitedata-development
     kubernetesManifests: manifests.yaml
-    dockerOrganization: cognitedata-development
     dockerImageName: powerdummy-populator
-    autoDeployOfficeHours: false
-    manualJudgement: false
 configuration:
   description: "Repopulate powerdummy tenant"
   inherit:
