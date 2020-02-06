@@ -1,7 +1,7 @@
 schema: "1"
 id: powerdummyPopulator
 pipeline:
-  application: powerdummy
+  application: powerdummy-populator
   name: Repopulate powerdummy tenant
   template:
     source: spinnaker://deploySingleClusterFromPubsub

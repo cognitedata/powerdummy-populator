@@ -1,5 +1,5 @@
 @Library('jenkins-helpers') _
-
+deploySpinnakerPipelineConfigs {}
 def label = "powerdummy-populator-${UUID.randomUUID().toString()}"
 
 podTemplate(
@@ -37,7 +37,6 @@ podTemplate(
         envVar(key: 'COGNITE_CLIENT_NAME', value: "powerdummy-populator")
     ]) {
 
-    deploySpinnakerPipelineConfigs {}
     node(label) {
         def isMaster = env.BRANCH_NAME == 'master'
         def dockerImageName = "eu.gcr.io/cognitedata/powerdummy-populator"
