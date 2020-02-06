@@ -4,9 +4,6 @@ kind: Job
 metadata:
   name: powerdummy-populator
   namespace: relationships
-  labels:
-    app: powerdummy-populator
-    team: relationships
 spec:
   replicas: 1
   revisionHistoryLimit: 5
