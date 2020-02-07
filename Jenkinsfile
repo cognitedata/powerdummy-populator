@@ -66,7 +66,7 @@ podTemplate(
                 sh('#!/bin/sh -e\n'
                     + "docker build -t $dockerImageName:$dockerImageTag"
                     + " --build-arg api_key=$POWERDUMMY_API_KEY"
-                    + "  .")
+                    + "  .", label:"Shell script to build docker image")
             }
             if (isMaster) {
                 stage("Push Docker image") {
