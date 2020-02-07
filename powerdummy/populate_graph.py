@@ -4,9 +4,9 @@ from powerdummy.utils.power_assets import *
 def populate_assets(client):
 
     substations = [generate_substation(name=f"Substation {i}") for i in range(10)]
-    transformers = [generate_substation(name=f"Transformer {i}") for i in range(5)]
+    transformers = [generate_power_transformer(name=f"PowerTransformer {i}") for i in range(5)]
 
-    lines = [generate_line(name=f"Line {i}") for i in range(20)]
+    lines = [generate_ac_line_segment(name=f"ACLineSegment {i}") for i in range(20)]
 
     al = client.assets.create(substations + transformers + lines)
     print(f"created {len(al)} core assets")
@@ -36,11 +36,11 @@ def create_terminals(assets):
     rels = []
     has_voltage_types = {
         "ACLineSegment",
-        "Sync Machine",
+        "SynchronousMachine",
         "Conform",
-        "StaticVar",
-        "Shunt",
-        "Peterson Coil",
+        "StaticVarCompensator",
+        "ShuntCompensator",
+        "PetersonCoil",
         "PowerTransformerEnd",
     }
 
