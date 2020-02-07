@@ -7,13 +7,7 @@ metadata:
   annotations:
     strategy.spinnaker.io/recreate: "true"
 spec:
-  replicas: 1
-  revisionHistoryLimit: 5
   template:
-    metadata:
-      labels:
-        app: powerdummy-populator
-        team: relationships
     spec:
       containers:
         - name: powerdummy-populator
