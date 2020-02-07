@@ -1,0 +1,33 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: powerdummy-populator
+  namespace: relationships
+  annotations:
+    strategy.spinnaker.io/recreate: "true"
+spec:
+  template:
+    spec:
+      containers:
+        - name: powerdummy-populator
+          image: eu.gcr.io/cognitedata/powerdummy-populator
+          resources:
+            requests:
+              memory: 300Mi
+              cpu: 200m
+            limits:
+              memory: 600Mi
+              cpu: 500m
+          env:
+            - name: COGNITE_BASE_URL
+              value: "https://greenfield.cognitedata.com"
+            - name: COGNITE_CLIENT_NAME
+              value: "powerdummy-populator"
+            - name: POWERDUMMY_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: powerdummy-apikey
+                  key: api-key
+      restartPolicy: Never
+  backoffLimit: 0
