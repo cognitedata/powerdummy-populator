@@ -42,6 +42,7 @@ def generate_power_transformer(name):
     metadata = {"Substation.kind": "SubstationKind.transformer"}
     return generate_power_asset(name, "PowerTransformer", metadata)
 
+
 def generate_power_transformer_end(name):
     return generate_power_asset(name, "PowerTransformerEnd", metadata)
 
@@ -76,12 +77,14 @@ def generate_hydro_generators(name):
     }
     return generate_power_asset(name, "HydroGeneratingUnit", metadata)
 
+
 def generate_thermal_generators(name):
     metadata = {
         "Equipment.gridType": "GridTypeKind.production",
         "GeneratingUnit.genControlSource": "GeneratorControlSource.plantControl",
     }
     return generate_power_asset(name, "ThermalGeneratingUnit", metadata)
+
 
 def generate_wind_generators(name):
     metadata = {
@@ -91,6 +94,7 @@ def generate_wind_generators(name):
     }
     return generate_power_asset(name, "WindGeneratingUnit", metadata)
 
+
 def generate_synchronous_machines(name):
     metadata = {
         "Equipment.gridType": "GridTypeKind.production",
@@ -98,6 +102,7 @@ def generate_synchronous_machines(name):
         "GeneratingUnit.startupTime": "123.0 (Seconds)",
     }
     return generate_power_asset(name, "SynchronousMachine", metadata)
+
 
 def generate_current_transformer(name):
     return generate_power_asset(name, "CurrentTransformer", metadata)
