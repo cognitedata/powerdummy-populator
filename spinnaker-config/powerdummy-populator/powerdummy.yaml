@@ -1,0 +1,18 @@
+schema: "1"
+id: powerdummyPopulator
+pipeline:
+  application: powerdummy-populator
+  name: Repopulate powerdummy tenant
+  template:
+    source: spinnaker://deploySingleClusterFromPubsub
+  variables:
+    githubRepository: powerdummy-populator
+    kubernetesAccount: cognitedata-development
+    kubernetesManifests: manifests.yaml
+    dockerImageName: powerdummy-populator
+configuration:
+  description: "Repopulate powerdummy tenant"
+  inherit:
+  - triggers
+  - expectedArtifacts
+  - notifications

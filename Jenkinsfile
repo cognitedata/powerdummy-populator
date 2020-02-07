@@ -1,5 +1,5 @@
 @Library('jenkins-helpers') _
-
+deploySpinnakerPipelineConfigs {}
 def label = "powerdummy-populator-${UUID.randomUUID().toString()}"
 
 podTemplate(
@@ -36,6 +36,7 @@ podTemplate(
         envVar(key: 'COGNITE_BASE_URL', value: "https://greenfield.cognitedata.com"),
         envVar(key: 'COGNITE_CLIENT_NAME', value: "powerdummy-populator")
     ]) {
+
     node(label) {
         def isMaster = env.BRANCH_NAME == 'master'
         def dockerImageName = "eu.gcr.io/cognitedata/powerdummy-populator"
@@ -68,6 +69,9 @@ podTemplate(
                 stage("Push Docker image") {
                     sh('#!/bin/sh -e\n' + 'docker login -u _json_key -p "$(cat /jenkins-docker-builder/credentials.json)" https://eu.gcr.io')
                     sh("docker push $dockerImageName:$dockerImageTag")
+                }
+                stageWithNotify('Send deployment message to Spinnaker','spinnaker-deployment-trigger') {
+                    deployToSpinnaker(dockerImageName: dockerImageName, dockerImageTag: dockerImageTag, kubernetesManifests: "manifests.yaml")
                 }
             }
         }
