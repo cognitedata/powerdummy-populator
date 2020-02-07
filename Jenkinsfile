@@ -63,7 +63,7 @@ podTemplate(
         }
         container('docker') {
             stage("Build Docker image") {
-                sh('#!/bin/sh -e\n'
+                sh(script: '#!/bin/sh -e\n'
                     + "docker build -t $dockerImageName:$dockerImageTag"
                     + " --build-arg api_key=$POWERDUMMY_API_KEY"
                     + "  .", label:"Shell script to build docker image")
