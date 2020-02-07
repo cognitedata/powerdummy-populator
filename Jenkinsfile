@@ -63,9 +63,10 @@ podTemplate(
         }
         container('docker') {
             stage("Build Docker image") {
-                sh("#!/bin/sh -e\n"
-                + "docker build -t $dockerImageName:$dockerImageTag"
-                + "--build-arg api_key=$POWERDUMMY_API_KEY .")
+                sh('#!/bin/sh -e\n'
+                    + "docker build -t $dockerImageName:$dockerImageTag"
+                    + " --build-arg api_key=$POWERDUMMY_API_KEY"
+                    + "  .")
             }
             if (isMaster) {
                 stage("Push Docker image") {
