@@ -24,8 +24,8 @@ def populate_assets(client):
         to_ss = dethash(l.external_id + "x") % len(subst_terminals)
         if to_ss == from_ss:
             to_ss = (to_ss + 1) % len(subst_terminals)
-        rf = generate_relationship(subst_terminals[from_ss].external_id, l.external_id, type="flowsTo")
-        rt = generate_relationship(subst_terminals[to_ss].external_id, l.external_id, type="flowsTo")
+        rf = generate_relationship(subst_terminals[from_ss].external_id, l.external_id, type="connectsTo")
+        rt = generate_relationship(subst_terminals[to_ss].external_id, l.external_id, type="connectsTo")
         line_rels += [rf, rt]
     tr = client.relationships.create(line_rels)
     print(f"created {len(tr)} relationships for lines")
@@ -55,7 +55,7 @@ def create_terminals(assets):
             a = generate_analog(f"Analog-{asset.name}-{i}")
             a.parent_external_id = t.external_id
             term_assets.append(a)
-        rels.append(generate_relationship(asset.external_id, t.external_id, "flowsTo"))  # asset connectsTo terminal
+        rels.append(generate_relationship(t.external_id, asset.external_id, "connectsTo"))  # terminal connectsTo asset
 
     rels += [
         generate_relationship(a.external_id, a.parent_external_id)
