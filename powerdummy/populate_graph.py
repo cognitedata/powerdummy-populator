@@ -4,18 +4,50 @@ from powerdummy.utils.power_assets import *
 def populate_assets(client):
 
     substations = [generate_substation(name=f"Substation {i}") for i in range(10)]
+
     transformers = [generate_power_transformer(name=f"PowerTransformer {i}") for i in range(5)]
+    transformer_ends = [generate_power_transformer_end(name=f"PowerTransformerEnd {i}") for i in range(5)]
+
+    generators = [generate_hydro_generators(name=f"HydroGenerator {i}") for i in range(5)]
+    sync_machines = [generate_synchronous_machines(name=f"SyncMachine for HydroGenerator {i}") for i in range(5)]
 
     lines = [generate_ac_line_segment(name=f"ACLineSegment {i}") for i in range(20)]
 
     al = client.assets.create(substations + transformers + lines)
     print(f"created {len(al)} core assets")
 
-    term_assets, term_rels = create_terminals(substations)
+    substation_rels = (
+        [
+            generate_relationship(te.external_id, t.external_id, type="belongsTo")
+            for te, t in zip(transformer_ends, transformers)
+        ]
+        + [
+            generate_relationship(t.external_id, s.external_id, type="belongsTo")
+            for t, s in zip(transformers, substations[:5])
+        ]
+        + [
+            generate_relationship(g.external_id, s.external_id, type="belongsTo")
+            for g, s in zip(generators, substations[5:10])
+        ]
+        + [
+            generate_relationship(sm.external_id, g.external_id, type="belongsTo")
+            for sm, g in zip(sync_machines, generators)
+        ]
+    )
+    tr = client.relationships.create(substation_rels)
+    print(f"created {len(tr)} relationships for substations")
+
+    term_assets, term_rels = create_terminals(sync_machines + transformer_ends)
     tl = client.assets.create(term_assets)
-    print(f"created {len(tl)} terminal/analog/sensor assets")
     tr = client.relationships.create(term_rels)
-    print(f"created {len(tr)} relationships for terminals")
+    print(
+        f"created {len(tl)} terminal/analog/sensor assets with {len(tr)} relationships for sync machines/transformer terminals"
+    )
+
+    term_assets, term_rels = create_terminals(substations)  # separately to more easily get the terminals to connect
+    tl = client.assets.create(term_assets)
+    tr = client.relationships.create(term_rels)
+    print(f"created {len(tl)} terminal/analog/sensor assets with {len(tr)} relationships for substation terminals")
 
     subst_terminals = [a for a in term_assets if a.metadata["type"] == "Terminal"]
     line_rels = []
@@ -55,7 +87,7 @@ def create_terminals(assets):
             a = generate_analog(f"Analog-{asset.name}-{i}")
             a.parent_external_id = t.external_id
             term_assets.append(a)
-        rels.append(generate_relationship(t.external_id, asset.external_id, "connectsTo"))  # terminal connectsTo asset
+        rels.append(generate_relationship(t.external_id, asset.external_id, "belongsTo"))  # terminal connectsTo asset
 
     rels += [
         generate_relationship(a.external_id, a.parent_external_id)

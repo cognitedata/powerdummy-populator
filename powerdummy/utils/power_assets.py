@@ -44,7 +44,7 @@ def generate_power_transformer(name):
 
 
 def generate_power_transformer_end(name):
-    return generate_power_asset(name, "PowerTransformerEnd", metadata)
+    return generate_power_asset(name, "PowerTransformerEnd")
 
 
 def generate_ac_line_segment(name):
