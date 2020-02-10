@@ -96,16 +96,11 @@ def generate_wind_generators(name):
 
 
 def generate_synchronous_machines(name):
-    metadata = {
-        "Equipment.gridType": "GridTypeKind.production",
-        "GeneratingUnit.genControlSource": "GeneratorControlSource.plantControl",
-        "GeneratingUnit.startupTime": "123.0 (Seconds)",
-    }
-    return generate_power_asset(name, "SynchronousMachine", metadata)
+    return generate_power_asset(name, "SynchronousMachine")
 
 
 def generate_current_transformer(name):
-    return generate_power_asset(name, "CurrentTransformer", metadata)
+    return generate_power_asset(name, "CurrentTransformer")
 
 
 def generate_relationship(from_asset, to_asset, type="belongsTo"):
