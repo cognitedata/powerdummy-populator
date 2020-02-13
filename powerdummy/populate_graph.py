@@ -38,16 +38,21 @@ def populate_assets(client):
     print(f"created {len(tr)} relationships for substations")
 
     term_assets, term_rels = create_terminals(sync_machines + transformer_ends)
-    tl = client.assets.create(term_assets)
-    tr = client.relationships.create(term_rels)
+    tl1 = client.assets.create(term_assets)
+    tr1 = client.relationships.create(term_rels)
     print(
-        f"created {len(tl)} terminal/analog/sensor assets with {len(tr)} relationships for sync machines/transformer terminals"
+        f"created {len(tl1)} terminal/analog/sensor assets with {len(tr1)} relationships for sync machines/transformer terminals"
     )
 
     term_assets, term_rels = create_terminals(substations)  # separately to more easily get the terminals to connect
-    tl = client.assets.create(term_assets)
-    tr = client.relationships.create(term_rels)
-    print(f"created {len(tl)} terminal/analog/sensor assets with {len(tr)} relationships for substation terminals")
+    tl2 = client.assets.create(term_assets)
+    tr2 = client.relationships.create(term_rels)
+    print(f"created {len(tl2)} terminal/analog/sensor assets with {len(tr2)} relationships for substation terminals")
+
+    analogs = [a for a in tl1 + tl2 if a.metadata["type"] == "Analog"]
+    ts = [TimeSeries(external_id=f"{a.external_id}_value") for a in analogs]
+    tsc = client.time_series.create(ts)
+    print(f"created {len(tsc)} time series on analogs")
 
     subst_terminals = [a for a in term_assets if a.metadata["type"] == "Terminal"]
     line_rels = []
