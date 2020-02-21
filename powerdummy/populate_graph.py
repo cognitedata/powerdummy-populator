@@ -13,7 +13,7 @@ def populate_assets(client):
 
     lines = [generate_ac_line_segment(name=f"ACLineSegment {i}") for i in range(20)]
 
-    al = client.assets.create(substations + transformers + lines)
+    al = client.assets.create(substations + transformers + generators + sync_machines + transformer_ends + lines)
     print(f"created {len(al)} core assets")
 
     substation_rels = (
