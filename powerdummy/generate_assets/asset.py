@@ -8,7 +8,7 @@ import numpy
 from .hashing import deterministic_hash, deterministic_sequence
 
 
-def get_asset(num: int, name: str) -> pandas.DataFrame:
+def get_asset(num: int, name: str, **metadata) -> pandas.DataFrame:
     """
     Generate assets with a name
 
@@ -18,6 +18,13 @@ def get_asset(num: int, name: str) -> pandas.DataFrame:
         name:
             the value of field type
 
+    Kwargs:
+        metadata:
+            key:
+                name of field in frame
+            value:
+                value of field frame
+
     Returns:
         assets:
             pandas DataFrame with assets
@@ -25,7 +32,10 @@ def get_asset(num: int, name: str) -> pandas.DataFrame:
     names = [f"{name}{i}" for i in range(num)]
     external_ids = [deterministic_hash(name) for name in names]
 
-    assets = pandas.DataFrame({"externalId": external_ids},)
+    if metadata:
+        assets = pandas.DataFrame(dict({"externalId": external_ids}, **metadata))
+    else:
+        assets = pandas.DataFrame({"externalId": external_ids})
 
     assets["name"] = names
     assets["type"] = name
@@ -36,7 +46,7 @@ def get_asset(num: int, name: str) -> pandas.DataFrame:
     return assets
 
 
-def get_conducting_asset(num: int, name: str) -> pandas.DataFrame:
+def get_conducting_asset(num: int, name: str, **metadata) -> pandas.DataFrame:
     """
     Create assets with a BaseVoltage field added
 
@@ -50,7 +60,7 @@ def get_conducting_asset(num: int, name: str) -> pandas.DataFrame:
         conducting_assets:
             pandas DataFrame with assets
     """
-    conducting_assets = get_asset(num=num, name=name)
+    conducting_assets = get_asset(num=num, name=name, **metadata)
 
     numpy.random.seed(1223)
 
@@ -61,7 +71,7 @@ def get_conducting_asset(num: int, name: str) -> pandas.DataFrame:
     return conducting_assets
 
 
-def get_generating_unit_asset(num: int, name: str) -> pandas.DataFrame:
+def get_generating_unit_asset(num: int, name: str, **metadata) -> pandas.DataFrame:
     """
     Create assets ending in name GeneratingUnit
 
@@ -75,12 +85,12 @@ def get_generating_unit_asset(num: int, name: str) -> pandas.DataFrame:
         generating_assets:
             pandas DataFrame with assets
     """
-    generating_assets = get_asset(num=num, name=f"{name}GeneratingUnit")
+    generating_assets = get_asset(num=num, name=f"{name}GeneratingUnit", **metadata)
 
     return generating_assets
 
 
-def get_geographical_region(num: int) -> pandas.DataFrame:
+def get_geographical_regions(num: int, **metadata) -> pandas.DataFrame:
     """
     Create num assets with type GeographicalRegion
 
@@ -93,12 +103,12 @@ def get_geographical_region(num: int) -> pandas.DataFrame:
             pandas.DataFrame with assets of type GeographicalRegion
     """
 
-    geographical_regions = get_asset(num=num, name="GeographicalRegion")
+    geographical_regions = get_asset(num=num, name="GeographicalRegion", **metadata)
 
     return geographical_regions
 
 
-def get_substations(num: int) -> pandas.DataFrame:
+def get_substations(num: int, **metadata) -> pandas.DataFrame:
     """
     Create num assets with type Substation
 
@@ -110,7 +120,7 @@ def get_substations(num: int) -> pandas.DataFrame:
         substations:
             pandas.DataFrame with assets of type Substation
     """
-    substations = get_asset(num=num, name="Substation")
+    substations = get_asset(num=num, name="Substation", **metadata)
 
     random_positions = [deterministic_sequence(f"Substation{i}") for i in range(num)]
 
@@ -120,7 +130,7 @@ def get_substations(num: int) -> pandas.DataFrame:
     return substations
 
 
-def get_ac_line_segments(num: int) -> pandas.DataFrame:
+def get_ac_line_segments(num: int, **metadata) -> pandas.DataFrame:
     """
     Create num assets with type ACLineSegment
 
@@ -135,7 +145,7 @@ def get_ac_line_segments(num: int) -> pandas.DataFrame:
     return get_conducting_asset(num, "ACLineSegment")
 
 
-def get_terminals(num: int) -> pandas.DataFrame:
+def get_terminals(num: int, **metadata) -> pandas.DataFrame:
     """
     Create num assets with type Terminal
 
@@ -147,12 +157,12 @@ def get_terminals(num: int) -> pandas.DataFrame:
         terminals:
             pandas.DataFrame with assets of type Terminal
     """
-    terminals = get_asset(num=num, name="Terminal")
+    terminals = get_asset(num=num, name="Terminal", **metadata)
 
     return terminals
 
 
-def get_analogs(num: int) -> pandas.DataFrame:
+def get_analogs(num: int, **metadata) -> pandas.DataFrame:
     """
     Create num assets with type Analog
 
@@ -164,12 +174,12 @@ def get_analogs(num: int) -> pandas.DataFrame:
         analogs:
             pandas.DataFrame with assets of type Analog
     """
-    analogs = get_asset(num=num, name="Analog")
+    analogs = get_asset(num=num, name="Analog", **metadata)
 
     return analogs
 
 
-def get_bidding_areas(num: int) -> pandas.DataFrame:
+def get_bidding_areas(num: int, **metadata) -> pandas.DataFrame:
     """
     Create num assets with type BiddingArea
 
@@ -182,12 +192,12 @@ def get_bidding_areas(num: int) -> pandas.DataFrame:
             pandas.DataFrame with assets of type BiddingArea
     """
 
-    bidding_areas = get_asset(num=num, name="BiddingArea")
+    bidding_areas = get_asset(num=num, name="BiddingArea", **metadata)
 
     return bidding_areas
 
 
-def get_power_transformers(num: int) -> pandas.DataFrame:
+def get_power_transformers(num: int, **metadata) -> pandas.DataFrame:
     """
     Create num assets with type PowerTransformer
 
@@ -199,12 +209,12 @@ def get_power_transformers(num: int) -> pandas.DataFrame:
         power_transformers:
             pandas.DataFrame with assets of type PowerTransformer
     """
-    power_transformers = get_asset(num=num, name="PowerTransformer")
+    power_transformers = get_asset(num=num, name="PowerTransformer", **metadata)
 
     return power_transformers
 
 
-def get_power_transformers_ends(num: int) -> pandas.DataFrame:
+def get_power_transformers_ends(num: int, **metadata) -> pandas.DataFrame:
     """
     Create num assets with type PowerTransformerEnd
 
@@ -217,12 +227,12 @@ def get_power_transformers_ends(num: int) -> pandas.DataFrame:
             pandas.DataFrame with assets of type PowerTransformerEnd
     """
 
-    power_transformers_ends = get_conducting_asset(num=num, name="PowerTransformerEnd")
+    power_transformers_ends = get_conducting_asset(num=num, name="PowerTransformerEnd", **metadata)
 
     return power_transformers_ends
 
 
-def get_synchronous_machines(num: int) -> pandas.DataFrame:
+def get_synchronous_machines(num: int, **metadata) -> pandas.DataFrame:
     """
     Create num assets with type SynchronousMachine
 
@@ -235,12 +245,12 @@ def get_synchronous_machines(num: int) -> pandas.DataFrame:
             pandas.DataFrame with assets of type SynchronousMachines
     """
 
-    synchronous_machines = get_asset(num=num, name="SynchronousMachine")
+    synchronous_machines = get_asset(num=num, name="SynchronousMachine", **metadata)
 
     return synchronous_machines
 
 
-def get_hydro_generating_units(num: int) -> pandas.DataFrame:
+def get_hydro_generating_units(num: int, **metadata) -> pandas.DataFrame:
     """
     Create num assets with type HydroGeneratingUnit
 
@@ -253,12 +263,12 @@ def get_hydro_generating_units(num: int) -> pandas.DataFrame:
             pandas.DataFrame with assets of type HydroGeneratingUnits
     """
 
-    hydro_generating_units = get_generating_unit_asset(num=num, name="Hydro")
+    hydro_generating_units = get_generating_unit_asset(num=num, name="Hydro", **metadata)
 
     return hydro_generating_units
 
 
-def get_thermal_generating_units(num: int) -> pandas.DataFrame:
+def get_thermal_generating_units(num: int, **metadata) -> pandas.DataFrame:
     """
     Create num assets with type ThermalGeneratingUnit
 
@@ -271,12 +281,12 @@ def get_thermal_generating_units(num: int) -> pandas.DataFrame:
             pandas.DataFrame with assets of type ThermalGeneratingUnits
     """
 
-    thermal_generating_units = get_generating_unit_asset(num=num, name="Thermal")
+    thermal_generating_units = get_generating_unit_asset(num=num, name="Thermal", **metadata)
 
     return thermal_generating_units
 
 
-def get_wind_generating_units(num: int) -> pandas.DataFrame:
+def get_wind_generating_units(num: int, **metadata) -> pandas.DataFrame:
     """
     Create num assets with type WindGeneratingUnit
 
@@ -289,24 +299,24 @@ def get_wind_generating_units(num: int) -> pandas.DataFrame:
             pandas.DataFrame with assets of type WindGeneratingUnits
     """
 
-    wind_generating_units = get_generating_unit_asset(num=num, name="Wind")
+    wind_generating_units = get_generating_unit_asset(num=num, name="Wind", **metadata)
 
     return wind_generating_units
 
 
-def get_wind_traps(num: int) -> pandas.DataFrame:
+def get_wave_traps(num: int, **metadata) -> pandas.DataFrame:
     """
-    Create num assets with type WindTrap
+    Create num assets with type WaveTrap
 
     Args:
         num:
             number of power transformers too create
 
     Returns:
-        wind_traps:
-            pandas.DataFrame with assets of type WindTrap
+        wave_traps:
+            pandas.DataFrame with assets of type WaveTrap
     """
 
-    wind_traps = get_conducting_asset(num=num, name="WindTrap")
+    wave_traps = get_conducting_asset(num=num, name="WaveTrap", **metadata)
 
-    return wind_traps
+    return wave_traps
