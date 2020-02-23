@@ -35,7 +35,8 @@ def concatenate_frames(
 
     return assets
 
-def flatted_multiindex(assets: pandas.DataFrame, index_name: str) -> pandas.DataFrame:
+
+def flatten_multiindex(assets: pandas.DataFrame, index_name: str) -> pandas.DataFrame:
     """
     Flatten frame created by concatenate_frames by pivoting the index fields into own columns.
     Non-existing values are left as NaN.
@@ -54,7 +55,7 @@ def flatted_multiindex(assets: pandas.DataFrame, index_name: str) -> pandas.Data
     assets.index = assets.reset_index(drop=True)
 
     index_frame = assets[[col for col in assets if col not in ["metadata", "metavalue"]]]
-    index_frame = index_frame.drop_duplicates(subset=index_name).reset_index(drop=True)
+    index_frame = index_frame.drop_duplicates(subset=index_name, ignore_index=True)
 
     assets = pandas.pivot(assets, index=index_name, columns="metadata", values="metavalue")
 
