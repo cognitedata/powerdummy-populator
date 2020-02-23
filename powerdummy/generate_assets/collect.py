@@ -55,6 +55,8 @@ import pandas
 
 import powerdummy.generate_assets as generate_assets
 
+from ..multiindex import concatenate_frames
+
 
 def create_asset_frame(*asset_config: Tuple) -> pandas.DataFrame:
     """
@@ -84,16 +86,6 @@ def create_asset_frame(*asset_config: Tuple) -> pandas.DataFrame:
         for name, num, metadata in asset_config
     ]
 
-    main_columns = ["type", "externalId"]
-
-    assets = pandas.concat(
-        [frame.melt(main_columns, var_name="metadata", value_name="metavalue") for frame in assets],
-        ignore_index=True,
-    )
-
-    assets = assets.set_index(
-        pandas.MultiIndex.from_frame(assets[["type", "externalId", "metadata"]])
-    ).sort_index()
-    assets = assets[["metavalue"]]
+    assets = concatenate_frames(assets, main_columns=["type", "externalId"])
 
     return assets
