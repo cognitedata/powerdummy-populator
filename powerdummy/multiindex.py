@@ -7,9 +7,7 @@ from typing import List, Tuple
 import pandas
 
 
-def concatenate_frames(
-    assets: List[pandas.DataFrame], main_columns: Tuple[str],
-) -> pandas.DataFrame:
+def concatenate_frames(assets: List[pandas.DataFrame], main_columns: Tuple[str],) -> pandas.DataFrame:
     """
     Concatenate frames with a MultiIndex structure
 
@@ -24,13 +22,10 @@ def concatenate_frames(
     """
 
     assets = pandas.concat(
-        [frame.melt(main_columns, var_name="metadata", value_name="metavalue") for frame in assets],
-        ignore_index=True,
+        [frame.melt(main_columns, var_name="metadata", value_name="metavalue") for frame in assets], ignore_index=True,
     )
 
-    assets = assets.set_index(
-        pandas.MultiIndex.from_frame(assets[["type", "externalId", "metadata"]])
-    ).sort_index()
+    assets = assets.set_index(pandas.MultiIndex.from_frame(assets[["type", "externalId", "metadata"]])).sort_index()
     assets = assets[["metavalue"]]
 
     return assets

@@ -47,9 +47,8 @@ Examples:
                                                      name                         Substation0
                                                      source                        powerdummy
 """
-from typing import Tuple, Union, Dict
-
 import re
+from typing import Dict, Tuple, Union
 
 import pandas
 
@@ -80,9 +79,7 @@ def create_asset_frame(*asset_config: Tuple) -> pandas.DataFrame:
     camel_to_snake_pattern = re.compile(r"(?<!^)(?=[A-Z])")
 
     assets = [
-        getattr(generate_assets, f"get_{camel_to_snake_pattern.sub('_', name).lower()}s")(
-            num, **metadata,
-        )
+        getattr(generate_assets, f"get_{camel_to_snake_pattern.sub('_', name).lower()}s")(num, **metadata,)
         for name, num, metadata in asset_config
     ]
 

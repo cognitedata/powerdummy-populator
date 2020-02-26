@@ -6,9 +6,8 @@ Class Substation is also used as Base for all conducting classes
 """
 from typing import List, Tuple
 
-import pandas
 import numpy
-
+import pandas
 from cognite.client.data_classes import Relationship
 
 from ..multiindex import flatten_multiindex
@@ -18,6 +17,8 @@ class Substation:
     """
     Class for connecting Substations to BiddingAreas to GeographicalRegions
     """
+
+    pidx: pandas.core.indexing._IndexSlice = pandas.IndexSlice
 
     required_assets: Tuple[str] = (
         "Substation",
@@ -39,11 +40,7 @@ class Substation:
 
         assert all(isin_mask), f"missing {asset_types[~isin_mask]} assets"
 
-        self.substations = flatten_multiindex(assets.loc["Substation"], "externalId")
-        self.bidding_areas = flatten_multiindex(assets.loc["BiddingArea"], "externalId")
-        self.geographical_regions = flatten_multiindex(
-            assets.loc["GeographicalRegion"], "externalId"
-        )
+        self.assets = assets
 
     def connect(self) -> Tuple[pandas.DataFrame, List[Relationship]]:
         """
@@ -54,3 +51,14 @@ class Substation:
         """
         set the existing assets given by the substations
         """
+
+        bidding_areas = self.assets.xs("BiddingArea", level="type")
+        geographical_regions = self.assets.xs("GeographicalRegions", level="type")
+
+        invalid_bidding_areas = (
+            bidding_area["parentExternalId"]
+            .isin(geographical_regions.index.get_level_values("externalId"))
+            .index.get_level_values("externalId")
+        )
+
+        self.assets = self.assets.drop(invalid_bidding_areas, level="externalId")

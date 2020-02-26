@@ -2,11 +2,10 @@
 Functions for creating assets hierarchy by adding parentExternalId field to assets
 """
 
-import pandas
 import numpy
+import pandas
 
 from .generate_assets import create_asset_frame
-
 
 ASSET_CONFIG = (
     ("Substation", 18, {}),
@@ -15,9 +14,7 @@ ASSET_CONFIG = (
 )
 
 
-def add_specific_parent(
-    assets: pandas.DataFrame, child_name: str, parent_name: str
-) -> pandas.DataFrame:
+def add_specific_parent(assets: pandas.DataFrame, child_name: str, parent_name: str) -> pandas.DataFrame:
     """
     Add parentExternalId to fields with type child_name pointing to parent_name 
 
@@ -77,9 +74,7 @@ def add_specific_parent(
 
     numpy.random.seed(5469)
 
-    parents = numpy.random.choice(
-        parent_ids, size=len(child_frame.index.get_level_values("externalId").unique())
-    )
+    parents = numpy.random.choice(parent_ids, size=len(child_frame.index.get_level_values("externalId").unique()))
 
     parents = numpy.repeat(parents, child_frame.index.get_level_values("externalId").value_counts())
 
