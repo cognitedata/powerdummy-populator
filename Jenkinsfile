@@ -59,6 +59,7 @@ podTemplate(
             }
             stage('Test') {
                 sh("poetry run pytest")
+                sh("poetry run pytest --doctest-modules powerdummy")
             }
         }
         container('docker') {
